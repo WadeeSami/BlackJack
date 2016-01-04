@@ -49,6 +49,10 @@ class Card:
         card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(self.rank), 
                     CARD_CENTER[1] + CARD_SIZE[1] * SUITS.index(self.suit))
         canvas.draw_image(card_images, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1]], CARD_SIZE)
+    
+    def draw_back(self, canvas, pos):
+        card_loc = (CARD_CENTER[0] ,  CARD_CENTER[1])
+        canvas.draw_image(card_back, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1]], CARD_SIZE)
         
 # define hand class
 class Hand:
@@ -84,14 +88,15 @@ class Hand:
             if value + 10 <= 21:
                 value += 10
         return value          
-    def draw(self, canvas, pos):
-        i = 0
+    def draw(self, canvas, pos , dealer):
+        initial_pos = pos[0]
+        i = CARD_SIZE[0] + 20
         for card in self.cards:
+            card.draw(canvas , pos)
+            if in_play and dealer and pos[0] == initial_pos:
+                card.draw_back(canvas , pos)
             pos[0] += i
-            card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(card.get_rank() ), 
-                        CARD_CENTER[1] + CARD_SIZE[1] * SUITS.index(card.get_suit() ) )
-            canvas.draw_image(card_images, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1]], CARD_SIZE)
-            i += CARD_SIZE[0] + 20  
+            
 # define deck class 
 class Deck:
 
@@ -126,6 +131,7 @@ def deal():
     print "new deal"
     global outcome, in_play , deck , player , dealer , score
     #create a new Deck , new player and dealer hands and shuffle the deck
+    outcome = ""
     deck = Deck()# already shuffled 
     player = Hand()
     dealer = Hand()
@@ -206,8 +212,14 @@ def stand():
 # draw handler    
 def draw(canvas):
     # test to make sure that card.draw works, replace with your code below
-    dealer.draw(canvas , [40 ,40 ])
-    player.draw(canvas , [40 , 300])
+    #draw the text
+    canvas.draw_text("BlackJack" , [70 , 50] , 40 , "Red")
+    canvas.draw_text("Dealer" , [40 , 120] , 30 , "Red")
+    canvas.draw_text("Player" , [40 , 380] , 30 , "Red")
+    canvas.draw_text("Score :" + str(score) , [400 , 120] , 30 , "Black")
+    canvas.draw_text(outcome , [400 , 170] , 30 , "Black")
+    dealer.draw(canvas , [40 ,150 ] , True)
+    player.draw(canvas , [40 , 400] , False)
     #card = Card("S", "A")
     #card.draw(canvas, [300, 300])
 
