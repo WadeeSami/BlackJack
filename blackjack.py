@@ -85,14 +85,13 @@ class Hand:
                 value += 10
         return value          
     def draw(self, canvas, pos):
-        card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(self.rank), 
-                    CARD_CENTER[1] + CARD_SIZE[1] * SUITS.index(self.suit))
-        canvas.draw_image(card_images, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1]], CARD_SIZE)
-        
- 
-
-
-        
+        i = 0
+        for card in self.cards:
+            pos[0] += i
+            card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(card.get_rank() ), 
+                        CARD_CENTER[1] + CARD_SIZE[1] * SUITS.index(card.get_suit() ) )
+            canvas.draw_image(card_images, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1]], CARD_SIZE)
+            i += CARD_SIZE[0] + 20  
 # define deck class 
 class Deck:
 
@@ -121,8 +120,6 @@ class Deck:
                 contains += " " + card.get_suit() + card.get_rank() 
         return "Deck contains" +  contains
         
-
-
 
 #define event handlers for buttons
 def deal():
@@ -209,9 +206,10 @@ def stand():
 # draw handler    
 def draw(canvas):
     # test to make sure that card.draw works, replace with your code below
-    
-    card = Card("S", "A")
-    card.draw(canvas, [300, 300])
+    dealer.draw(canvas , [40 ,40 ])
+    player.draw(canvas , [40 , 300])
+    #card = Card("S", "A")
+    #card.draw(canvas, [300, 300])
 
 
 # initialization frame
