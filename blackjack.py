@@ -63,14 +63,14 @@ class Hand:
         else:
             for card in self.cards:
                 contains += " " + card.get_suit() + card.get_rank() 
-        return "Hand contains" +  contains
+        return "Hand contains" +  contains +  "  " + str(self.get_value())
 
     def add_card(self, card):
         self.cards.append(card)
 
     def get_value(self):
         value = 0
-        aces = False
+        aces = False # a flag to determine if aces exists in the hand of the player or the dealer
         if self.cards == [] :
             return 0
         for card in self.cards:
@@ -126,40 +126,86 @@ class Deck:
 
 #define event handlers for buttons
 def deal():
-    global outcome, in_play
+    print "new deal"
+    global outcome, in_play , deck , player , dealer , score
     #create a new Deck , new player and dealer hands and shuffle the deck
     deck = Deck()# already shuffled 
     player = Hand()
     dealer = Hand()
     #add cards for both the dealer and the player
+    print "player"
     card1 = deck.deal_card()
     card2 = deck.deal_card()
     player.add_card(card1)
     player.add_card(card2)
-
     card1 = deck.deal_card()
     card2 = deck.deal_card()
     dealer.add_card(card1)
     dealer.add_card(card2)
 
     print player
+    print "dealer"
     print dealer
     in_play = True
+    if player.get_value() == 21:
+        score+= 1
+        outcome = "You Win"
+        in_play = False
+    elif dealer.get_value() == 21:
+        score-= 1
+        outcome = "You Lose"
+        in_play = False
 
 def hit():
-    pass	# replace with your code below
- 
+    global outcome , deck , in_play , score
+        # replace with your code below
+    print "hit"
     # if the hand is in play, hit the player
-   
-    # if busted, assign a message to outcome, update in_play and score
-       
+    if in_play:
+        #get acard from the deck
+        card = deck.deal_card()
+        player.add_card(card)
+        # if busted, assign a message to outcome, update in_play and score
+        if player.get_value() > 21:
+                outcome = "You lost"
+                score -= 1
+                in_play = False   
+        print "player  " + str(player)
+        print "dealer  " + str(dealer)
+        print "The score is " + str(score)
+        print "Message is :  " + str(outcome)
+    else :
+        print "you should start a new game"    
 def stand():
-    pass	# replace with your code below
-   
+    global score , outcome , in_play
+    print "stand"
+    if not in_play:
+        print "you should start a new game"
+        return
+    if dealer.get_value() >= 17:
+        print "can't stand , you have to hit :3"
+        return 
     # if hand is in play, repeatedly hit dealer until his hand has value 17 or more
-
+    while dealer.get_value() < 17:
+        dealer.add_card(deck.deal_card())
     # assign a message to outcome, update in_play and score
-
+    if dealer.get_value() > 21:
+        outcome = "You Win"
+        in_play = False
+        score += 1
+    elif dealer.get_value() >= player.get_value():    
+        outcome = "You Lose"
+        in_play = False
+        score -= 1
+    elif dealer.get_value() < player.get_value(): 
+        outcome = "You Win"
+        in_play = False
+        score += 1
+    print "player  " + str(player)
+    print "dealer  " + str(dealer)
+    print "The score is " + str(score)
+    print "Message is :  " + outcome
+        
 # draw handler    
 def draw(canvas):
     # test to make sure that card.draw works, replace with your code below
