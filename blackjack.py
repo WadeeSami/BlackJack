@@ -70,16 +70,19 @@ class Hand:
 
     def get_value(self):
         value = 0
+        aces = False
         if self.cards == [] :
             return 0
         for card in self.cards:
             if card.get_rank() != 'A':
                 value += VALUES[card.get_rank()]
             else :#this is an Ace
+                #print "Ace :3"
                 value += 1
-                if value + 10 > 21:#cant count Ace as 11
-                    continue;    
-                else: value  += 10 #can add safely
+                aces = True
+        if aces:
+            if value + 10 <= 21:
+                value += 10
         return value          
     def draw(self, canvas, pos):
         card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(self.rank), 
@@ -87,6 +90,7 @@ class Hand:
         canvas.draw_image(card_images, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1]], CARD_SIZE)
         
  
+
 
         
 # define deck class 
