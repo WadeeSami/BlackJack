@@ -16,7 +16,9 @@ card_back = simplegui.load_image("http://storage.googleapis.com/codeskulptor-ass
 in_play = False
 outcome = ""
 score = 0
-
+deck = ""
+player = ""
+dealer = ""
 # define globals for cards
 SUITS = ('C', 'S', 'H', 'D')
 RANKS = ('A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K')
@@ -68,15 +70,17 @@ class Hand:
 
     def get_value(self):
         value = 0
+        if self.cards == [] :
+            return 0
         for card in self.cards:
-            if card.get_rank != 'A':
-                value += VALUES[card.get_rank]
+            if card.get_rank() != 'A':
+                value += VALUES[card.get_rank()]
             else :#this is an Ace
                 value += 1
                 if value + 10 > 21:#cant count Ace as 11
                     continue;    
                 else: value  += 10 #can add safely
-                  
+        return value          
     def draw(self, canvas, pos):
         card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(self.rank), 
                     CARD_CENTER[1] + CARD_SIZE[1] * SUITS.index(self.suit))
@@ -119,9 +123,23 @@ class Deck:
 #define event handlers for buttons
 def deal():
     global outcome, in_play
+    #create a new Deck , new player and dealer hands and shuffle the deck
+    deck = Deck()# already shuffled 
+    player = Hand()
+    dealer = Hand()
+    #add cards for both the dealer and the player
+    card1 = deck.deal_card()
+    card2 = deck.deal_card()
+    player.add_card(card1)
+    player.add_card(card2)
 
-    # your code goes here
-    
+    card1 = deck.deal_card()
+    card2 = deck.deal_card()
+    dealer.add_card(card1)
+    dealer.add_card(card2)
+
+    print player
+    print dealer
     in_play = True
 
 def hit():
